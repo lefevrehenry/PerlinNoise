@@ -71,16 +71,17 @@ def perlin_noise(x):
     frequency = 1. / pow(5,octave-1)
     persitance = .5
 
-    sum = 0
     result = 0
 
     for i in range(0,octave):
-        sum += amplitude
-        result += amplitude * smooth_cubic_noise(x * frequency)
+        t = i * 10
+        result += amplitude * smooth_cubic_noise(((x * frequency) + t) % N)
         frequency *= 5
         amplitude *= persitance
 
-    return result / sum
+    geom_lim = (1. - persitance) / (1. - amplitude)
+
+    return result * geom_lim
 
 
 sampling = N * 10
@@ -88,23 +89,4 @@ x = list(np.linspace(0,N,sampling))
 y = list(map(perlin_noise,x))
 
 ax.plot(x,y)
-
-
-def animate(i):
-    i = i / 10.
-
-    # sampling = N * 10
-    # x = list(np.linspace(i,i+N,sampling))
-    # y = list(map(perlin_noise,x))
-
-    ax.clear()
-
-    # plot discret noise
-    ax.plot(X,Y,'xr')
-
-    # plot perlin
-    ax.plot(x,y)
-
-# ani = FuncAnimation(fig, animate, interval=100)
-
 plt.show()
